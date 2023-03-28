@@ -17,10 +17,15 @@ app.get('/make/:url', (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`>>> Example app listening on port ${port}`)
+
+  convert('https://metodovidasaudavel.com/')
 })
 
 const convert = async (url) => {
+  console.log('==========================================================')
+  console.log('STARTING....')
+
   const prettifyUrls = true
   // let url = ''
   // url = 'https://curcumy.info'
@@ -28,14 +33,15 @@ const convert = async (url) => {
   // url = 'https://paginadasaude.com.br/instituto-plano-de-menina-e-bayer-promovem-evento-gratuito-sobre-saude-feminina-na-share-student-living-butanta-neste-sabado/'
   // url = 'https://www.g1.com.br'
   // url = 'https://www.hola.com/actualidad/20230122225024/shakira-pique-hijo-milan-cumpleanos/'
-  // url = 'https://icloakerpro.com/site/'
+  //url = 'https://icloakerpro.com/site/'
   // url = 'https://oliveirassomerville.com'
 
   const folderSite = (Math.round((Math.pow(36, 10 + 1) - Math.random() * Math.pow(36, 10))).toString(36).slice(1))
   const dir = './websites/'+folderSite
 
   fs.mkdirSync(dir)
-  scrape({
+
+  let response = await scrape({
     urls: [url],
     directory: dir,
     plugins: [ new SaveToExistingDirectoryPlugin() ],
@@ -58,14 +64,20 @@ const convert = async (url) => {
     // 	{ directory: 'assets/media', extensions: ['.mp4', '.mp3', '.ogg', '.webm', '.mov', '.wave', '.wav', '.flac'] },
     // 	{ directory: 'assets/fonts', extensions: ['.ttf', '.woff', '.woff2', '.eot', '.svg'] }
     // ],
-  }).then((data) => {
-    let zipFolder = new URL(url).hostname
-    let date = new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split(".")[0].replace(/[T:]/g, '').replace(/[T-]/g, '')
-    let zipFile = './websites/'+zipFolder+'_'+date+'.zip'
-    zip(dir, zipFile)
-    return "Entire website succesfully downloaded>> "+zipFile
-    //zip.compressFolder(dir, './websites/'+zipFolder+'.zip');
-  }).catch((err) => {
-    return ("An error ocurred", err);
   })
+
+  try {
+    if(response){
+      let zipFolder = new URL(url).hostname
+      let date = new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split(".")[0].replace(/[T:]/g, '').replace(/[T-]/g, '')
+      let zipFile = './websites/'+zipFolder+'_'+date+'.zip'
+      zip(dir, zipFile)
+      console.log( "Entire website succesfully downloaded>> "+zipFile )
+      //zip.compressFolder(dir, './websites/'+zipFolder+'.zip');
+    }
+  } catch (error) {
+    console.log("An error ocurred", error);
+  }  
+  console.log('END')
+  console.log('==========================================================')
 }
