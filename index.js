@@ -7,14 +7,9 @@ import fs from 'fs';
 import crypto from 'crypto';
 
 //#########################################
-const tempfolder = './temp';
+const tempfolder = 'websites';
 try {
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-        console.log("Directory is created.");
-    } else {
-        console.log("Directory already exists.");
-    }
+  tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), tempfolder));
 } catch (err) {
     console.log(err);
 }
