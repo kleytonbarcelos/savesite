@@ -1,5 +1,4 @@
 {
-  "installCommand": "mkdir -p tmp",
   "builds": [
     {
       "src": "index.js",
