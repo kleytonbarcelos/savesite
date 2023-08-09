@@ -12,7 +12,10 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-app.post('/clonar', async (req, res) => {
+app.get('/', async (req, res) => {
+  return res.status(400)
+})
+app.post('/save', async (req, res) => {
   const { url } = req.body;
 
   // Gera um SKU aleatório
@@ -54,8 +57,8 @@ app.post('/clonar', async (req, res) => {
     archive.directory(subDirectory, false);
     archive.finalize();
   } catch (error) {
-    console.error('Erro ao clonar o site:', error.message);
-    res.status(500).send('Ocorreu um erro ao clonar o site.');
+    console.error('Erro ao salvar o site:', error.message);
+    res.status(500).send('Ocorreu um erro ao salvar o site.');
   }
 });
 
