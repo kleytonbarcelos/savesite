@@ -5,9 +5,11 @@ import archiver from 'archiver';
 import path from 'path';
 import fs from 'fs';
 
-// Cria a pasta 'websites' no início do código
-const websitesDirectory = path.join(__dirname, 'websites');
-fs.mkdirSync(websitesDirectory, { recursive: true });
+
+const tempDir = 'tmp'
+if(!fs.existsSync(tempDir)){
+  fs.mkdirSync(tempDir)
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,11 +26,11 @@ app.post('/save', async (req, res) => {
 
   // Obtém o nome do site a partir da URL
   const siteName = getSiteName(url);
-  const subDirectory = path.join('websites', siteName);
+  const subDirectory = path.join(tempDir, siteName);
 
   // Configuração para o website-scraper
   const options = {
-    urls: [url],
+    urls: [{url, filename: 'blog.html'}],
     directory: subDirectory,
   };
 
@@ -47,7 +49,8 @@ app.post('/save', async (req, res) => {
 
         // Remove a pasta gerada se ela existir
         if (fs.existsSync(subDirectory)) {
-          fs.rmdirSync(subDirectory, { recursive: true });
+          //fs.rmdirSync(subDirectory, { recursive: true });
+          fs.rmSync(subDirectory, { recursive: true, force: true });
           console.log('Pasta removida:', subDirectory);
         }
       });
