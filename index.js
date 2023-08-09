@@ -15,12 +15,13 @@ app.use(express.static('public'));
 app.get('/', (req, res) => {
   res.send('Bem-vindo à página de clonagem de site!');
 });
+
 app.post('/save', async (req, res) => {
   const { url } = req.body;
 
-  // Gera um SKU aleatório
-  const sku = crypto.randomBytes(4).toString('hex');
-  const subDirectory = path.join('websites', sku);
+  // Obtém o nome do site a partir da URL
+  const siteName = getSiteName(url);
+  const subDirectory = path.join('websites', siteName);
 
   // Configuração para o website-scraper
   const options = {
@@ -32,14 +33,14 @@ app.post('/save', async (req, res) => {
     await scrape(options);
 
     // Cria um arquivo zip do conteúdo clonado
-    const output = fs.createWriteStream(`${subDirectory}.zip`);
+    const output = fs.createWriteStream(`${siteName}.zip`);
     const archive = archiver('zip', { zlib: { level: 9 } });
 
     output.on('close', async () => {
       console.log('Arquivo zip criado:', archive.pointer(), 'bytes');
-      res.download(`${subDirectory}.zip`, async () => {
+      res.download(`${siteName}.zip`, async () => {
         // Remove o arquivo zip após o download
-        fs.rmSync(`${subDirectory}.zip`);
+        fs.rmSync(`${siteName}.zip`);
 
         // Remove a pasta gerada se ela existir
         if (fs.existsSync(subDirectory)) {
@@ -61,6 +62,12 @@ app.post('/save', async (req, res) => {
     res.status(500).send('Ocorreu um erro ao salvar o site.');
   }
 });
+
+function getSiteName(url) {
+  const domain = new URL(url).hostname;
+  const siteName = domain.replace(/^www\./, '').replace(/\./g, '-').replace(/\.com$/, '');
+  return siteName;
+}
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
