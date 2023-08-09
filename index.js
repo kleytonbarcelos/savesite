@@ -6,6 +6,20 @@ import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 
+//#########################################
+const tempfolder = './temp';
+try {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+        console.log("Directory is created.");
+    } else {
+        console.log("Directory already exists.");
+    }
+} catch (err) {
+    console.log(err);
+}
+//#########################################
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -21,7 +35,7 @@ app.post('/save', async (req, res) => {
 
   // Obtém o nome do site a partir da URL
   const siteName = getSiteName(url);
-  const subDirectory = path.join('websites', siteName);
+  const subDirectory = path.join(tempfolder, siteName);
 
   // Configuração para o website-scraper
   const options = {
