@@ -12,9 +12,9 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-app.get('/', async (req, res) => {
-  return res.status(400)
-})
+app.get('/', (req, res) => {
+  res.send('Bem-vindo à página de clonagem de site!');
+});
 app.post('/save', async (req, res) => {
   const { url } = req.body;
 
