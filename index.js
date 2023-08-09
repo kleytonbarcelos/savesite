@@ -4,16 +4,6 @@ import scrape from 'website-scraper';
 import archiver from 'archiver';
 import path from 'path';
 import fs from 'fs';
-import crypto from 'crypto';
-
-//#########################################
-const tempfolder = 'websites';
-try {
-  tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), tempfolder));
-} catch (err) {
-    console.log(err);
-}
-//#########################################
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,7 +20,7 @@ app.post('/save', async (req, res) => {
 
   // Obtém o nome do site a partir da URL
   const siteName = getSiteName(url);
-  const subDirectory = path.join(tempfolder, siteName);
+  const subDirectory = path.join('websites', siteName);
 
   // Configuração para o website-scraper
   const options = {
