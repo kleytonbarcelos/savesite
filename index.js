@@ -5,6 +5,10 @@ import archiver from 'archiver';
 import path from 'path';
 import fs from 'fs';
 
+// Cria a pasta 'websites' no início do código
+const websitesDirectory = path.join(__dirname, 'websites');
+fs.mkdirSync(websitesDirectory, { recursive: true });
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
